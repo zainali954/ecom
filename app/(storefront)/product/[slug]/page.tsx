@@ -5,6 +5,7 @@ import { ProductGallery } from "@/features/product/components/product-gallery";
 import { ProductInfo } from "@/features/product/components/product-info";
 import { ProductDescription } from "@/features/product/components/product-description";
 import { RelatedProducts } from "@/features/product/components/related-products";
+import { getWishlistProductIds } from "@/features/wishlist/queries";
 import { NotFoundError } from "@/lib/errors";
 
 interface ProductPageProps {
@@ -36,7 +37,12 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     throw error;
   }
 
-  const relatedProducts = await getRelatedProducts(product.id, product.category.id);
+  const [relatedProducts, wishlistIds] = await Promise.all([
+    getRelatedProducts(product.id, product.category.id),
+    getWishlistProductIds(),
+  ]);
+
+  const isWishlisted = wishlistIds.has(product.id);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -45,7 +51,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         <ProductGallery images={product.images} productName={product.name} />
 
         {/* Product info */}
-        <ProductInfo product={product} />
+        <ProductInfo product={product} isWishlisted={isWishlisted} />
       </div>
 
       {/* Description */}
