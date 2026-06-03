@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { VariantSelector } from "./variant-selector";
 import { StockStatus } from "./stock-status";
 import { WishlistButton } from "@/features/wishlist/components/wishlist-button";
+import { AddToCartButton } from "@/features/cart/components/add-to-cart-button";
 import type { ProductDetail, ProductVariantDetail } from "@/types/product";
 
 interface ProductInfoProps {
@@ -96,13 +96,18 @@ export function ProductInfo({ product, isWishlisted }: ProductInfoProps) {
 
       {/* Add to cart / Wishlist */}
       <div className="flex gap-3">
-        <Button size="lg" className="flex-1" disabled={!canAddToCart}>
-          {currentStock <= 0 && (!isVariable || selectedVariant)
-            ? "Out of stock"
-            : isVariable && !selectedVariant
-              ? "Select options"
-              : "Add to cart"}
-        </Button>
+        <AddToCartButton
+          productId={product.id}
+          variantId={selectedVariant?.id ?? null}
+          disabled={!canAddToCart}
+          label={
+            currentStock <= 0 && (!isVariable || selectedVariant)
+              ? "Out of stock"
+              : isVariable && !selectedVariant
+                ? "Select options"
+                : "Add to cart"
+          }
+        />
         <WishlistButton productId={product.id} isWishlisted={isWishlisted} variant="default" />
       </div>
 
