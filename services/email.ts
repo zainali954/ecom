@@ -6,6 +6,8 @@ import { logger } from "@/lib/logger";
 import { getVerifyEmailHtml } from "@/emails/verify-email";
 import { getResetPasswordHtml } from "@/emails/reset-password";
 import { getWelcomeHtml } from "@/emails/welcome";
+import { getOrderConfirmationHtml } from "@/emails/order-confirmation";
+import { getOrderStatusUpdatedHtml } from "@/emails/order-status-updated";
 
 const resend = new Resend(env.RESEND_API_KEY);
 
@@ -60,4 +62,61 @@ export async function sendWelcomeEmail(email: string, name: string): Promise<voi
   }
 
   logger.info("Welcome email sent", { email });
+}
+
+export async function sendOrderConfirmationEmail(
+  email: string,
+  data: {
+    customerName: string;
+    orderNumber: string;
+    items: {
+      name: string;
+      variantLabel: string;
+      quantity: number;
+      unitPrice: number;
+      totalPrice: number;
+    }[];
+    subtotal: number;
+    shippingCost: number;
+    discount: number;
+    total: number;
+    paymentMethod: string;
+    shippingAddress: string;
+  },
+): Promise<void> {
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `Order Confirmed — ${data.orderNumber} — DollarShop`,
+    html: getOrderConfirmationHtml(data),
+  });
+
+  if (error) {
+    logger.error("Failed to send order confirmation email", { email, error });
+  }
+
+  logger.info("Order confirmation email sent", { email, orderNumber: data.orderNumber });
+}
+
+export async function sendOrderStatusEmail(
+  email: string,
+  data: {
+    customerName: string;
+    orderNumber: string;
+    oldStatus: string;
+    newStatus: string;
+  },
+): Promise<void> {
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `Order ${data.orderNumber} — Status Updated — DollarShop`,
+    html: getOrderStatusUpdatedHtml(data),
+  });
+
+  if (error) {
+    logger.error("Failed to send order status email", { email, error });
+  }
+
+  logger.info("Order status email sent", { email, orderNumber: data.orderNumber });
 }
