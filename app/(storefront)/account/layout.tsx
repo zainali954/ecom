@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 const accountLinks = [
   { href: "/account", label: "Dashboard" },
+  { href: "/account/orders", label: "Orders" },
   { href: "/account/addresses", label: "Addresses" },
 ];
 

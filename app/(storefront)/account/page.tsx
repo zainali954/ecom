@@ -15,6 +15,13 @@ export default function AccountPage() {
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <Link
+          href="/account/orders"
+          className="rounded-lg border bg-card p-5 transition-colors hover:bg-accent"
+        >
+          <h3 className="text-sm font-medium">Orders</h3>
+          <p className="mt-1 text-xs text-muted-foreground">View and track your orders</p>
+        </Link>
+        <Link
           href="/account/addresses"
           className="rounded-lg border bg-card p-5 transition-colors hover:bg-accent"
         >
