@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -56,6 +57,11 @@ export function AddressList({ addresses }: AddressListProps) {
           <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
             <DialogHeader>
               <DialogTitle>{editingAddress ? "Edit Address" : "Add New Address"}</DialogTitle>
+              <DialogDescription>
+                {editingAddress
+                  ? "Update your delivery address details."
+                  : "Enter your delivery address details."}
+              </DialogDescription>
             </DialogHeader>
             <AddressForm address={editingAddress} onSuccess={handleClose} />
           </DialogContent>

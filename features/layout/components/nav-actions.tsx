@@ -12,19 +12,38 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/features/auth/actions";
 
-export function NavActions({ session }: { session: Session | null }) {
+function CountBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-none text-white">
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
+export function NavActions({
+  session,
+  cartCount,
+  wishlistCount,
+}: {
+  session: Session | null;
+  cartCount: number;
+  wishlistCount: number;
+}) {
   return (
     <div className="flex items-center gap-2">
       <Button variant="ghost" size="sm" asChild>
-        <Link href="/wishlist" aria-label="Wishlist">
+        <Link href="/wishlist" aria-label="Wishlist" className="relative">
           <HeartIcon />
+          <CountBadge count={wishlistCount} />
           <span className="sr-only">Wishlist</span>
         </Link>
       </Button>
 
       <Button variant="ghost" size="sm" asChild>
-        <Link href="/cart" aria-label="Cart">
+        <Link href="/cart" aria-label="Cart" className="relative">
           <ShoppingBagIcon />
+          <CountBadge count={cartCount} />
           <span className="sr-only">Cart</span>
         </Link>
       </Button>

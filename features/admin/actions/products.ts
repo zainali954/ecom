@@ -58,7 +58,7 @@ export async function createProduct(data: unknown) {
 
   if (parsed.data.type === "variable" && parsed.data.variants?.length) {
     for (const v of parsed.data.variants) {
-      await ProductVariant.create({
+      const variant = await ProductVariant.create({
         product: product._id,
         attributes: v.attributes.map((a) => ({
           attribute: a.attribute,
@@ -67,8 +67,13 @@ export async function createProduct(data: unknown) {
         price: v.price,
         salePrice: v.salePrice ?? null,
         sku: v.sku ?? "",
-        stock: v.stock ?? 0,
         isActive: v.isActive ?? true,
+      });
+      await Inventory.create({
+        product: product._id,
+        variant: variant._id,
+        stock: v.stock ?? 0,
+        sku: v.sku ?? "",
       });
     }
   }
@@ -142,6 +147,7 @@ export async function updateProduct(productId: string, data: unknown) {
     for (const eid of existingIds) {
       if (!incomingIds.has(eid)) {
         await ProductVariant.findByIdAndDelete(eid);
+        await Inventory.deleteOne({ product: productId, variant: eid });
       }
     }
 
@@ -155,11 +161,15 @@ export async function updateProduct(productId: string, data: unknown) {
           price: v.price,
           salePrice: v.salePrice ?? null,
           sku: v.sku ?? "",
-          stock: v.stock ?? 0,
           isActive: v.isActive ?? true,
         });
+        await Inventory.findOneAndUpdate(
+          { product: productId, variant: v.id },
+          { stock: v.stock ?? 0, sku: v.sku ?? "" },
+          { upsert: true },
+        );
       } else {
-        await ProductVariant.create({
+        const variant = await ProductVariant.create({
           product: productId,
           attributes: v.attributes.map((a) => ({
             attribute: a.attribute,
@@ -168,8 +178,13 @@ export async function updateProduct(productId: string, data: unknown) {
           price: v.price,
           salePrice: v.salePrice ?? null,
           sku: v.sku ?? "",
-          stock: v.stock ?? 0,
           isActive: v.isActive ?? true,
+        });
+        await Inventory.create({
+          product: productId,
+          variant: variant._id,
+          stock: v.stock ?? 0,
+          sku: v.sku ?? "",
         });
       }
     }

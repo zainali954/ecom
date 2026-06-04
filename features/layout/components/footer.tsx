@@ -70,7 +70,7 @@ export function Footer() {
             <h3 className="text-sm font-medium">Support</h3>
             <ul className="mt-3 space-y-2">
               {supportLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-sm text-muted-foreground transition-colors hover:text-foreground"

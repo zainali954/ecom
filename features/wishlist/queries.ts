@@ -39,6 +39,18 @@ export async function getWishlistProducts(): Promise<CatalogProduct[]> {
     });
 }
 
+export async function getWishlistItemCount(): Promise<number> {
+  const session = await auth();
+  if (!session?.user?.id) return 0;
+
+  await connectDB();
+
+  const wishlist = await Wishlist.findOne({ user: session.user.id }).select("products").lean();
+  if (!wishlist || !wishlist.products) return 0;
+
+  return (wishlist.products as unknown[]).length;
+}
+
 export async function getWishlistProductIds(): Promise<Set<string>> {
   const session = await auth();
   if (!session?.user?.id) return new Set();

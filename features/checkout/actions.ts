@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import mongoose from "mongoose";
 import { connectDB } from "@/lib/db";
 import { auth } from "@/auth";
 import { logger } from "@/lib/logger";
@@ -39,23 +38,17 @@ export async function placeOrder(input: PlaceOrderInput): Promise<ApiResponse<Or
 
   await connectDB();
 
-  const dbSession = await mongoose.startSession();
-
   try {
-    dbSession.startTransaction();
-
     const [cart, address] = await Promise.all([
-      Cart.findOne({ user: session.user.id }).session(dbSession),
-      Address.findOne({ _id: addressId, user: session.user.id }).lean().session(dbSession),
+      Cart.findOne({ user: session.user.id }),
+      Address.findOne({ _id: addressId, user: session.user.id }).lean(),
     ]);
 
     if (!cart || !cart.items || cart.items.length === 0) {
-      await dbSession.abortTransaction();
       return { success: false, message: "Your cart is empty" };
     }
 
     if (!address) {
-      await dbSession.abortTransaction();
       return { success: false, message: "Shipping address not found" };
     }
 
@@ -76,9 +69,8 @@ export async function placeOrder(input: PlaceOrderInput): Promise<ApiResponse<Or
       const variantId = item.variant ? String(item.variant) : null;
       const quantity = item.quantity as number;
 
-      const product = await Product.findById(productId).lean().session(dbSession);
+      const product = await Product.findById(productId).lean();
       if (!product || !(product as Record<string, unknown>).isActive) {
-        await dbSession.abortTransaction();
         return {
           success: false,
           message: `A product in your cart is no longer available. Please review your cart.`,
@@ -96,11 +88,9 @@ export async function placeOrder(input: PlaceOrderInput): Promise<ApiResponse<Or
             path: "attributes.attribute attributes.value",
             select: "name value",
           })
-          .lean()
-          .session(dbSession);
+          .lean();
 
         if (!variant || !(variant as Record<string, unknown>).isActive) {
-          await dbSession.abortTransaction();
           return {
             success: false,
             message: `A variant in your cart is no longer available. Please review your cart.`,
@@ -121,44 +111,28 @@ export async function placeOrder(input: PlaceOrderInput): Promise<ApiResponse<Or
           })
           .filter(Boolean)
           .join(", ");
-
-        const currentStock = (v.stock as number) ?? 0;
-        if (quantity > currentStock) {
-          await dbSession.abortTransaction();
-          return {
-            success: false,
-            message: `"${p.name}" (${variantLabel}) only has ${currentStock} in stock`,
-          };
-        }
-
-        await ProductVariant.updateOne({ _id: variantId }, { $inc: { stock: -quantity } }).session(
-          dbSession,
-        );
       } else {
         unitPrice = (p.salePrice as number) ?? (p.basePrice as number);
         sku = (p.sku as string) || "";
-
-        const inv = await Inventory.findOne({
-          product: productId,
-          variant: null,
-        })
-          .lean()
-          .session(dbSession);
-
-        const currentStock = inv ? ((inv as Record<string, unknown>).stock as number) : 0;
-        if (quantity > currentStock) {
-          await dbSession.abortTransaction();
-          return {
-            success: false,
-            message: `"${p.name}" only has ${currentStock} in stock`,
-          };
-        }
-
-        await Inventory.updateOne(
-          { product: productId, variant: null },
-          { $inc: { stock: -quantity } },
-        ).session(dbSession);
       }
+
+      const inv = await Inventory.findOne({
+        product: productId,
+        variant: variantId ?? null,
+      }).lean();
+
+      const currentStock = inv ? ((inv as Record<string, unknown>).stock as number) : 0;
+      if (quantity > currentStock) {
+        return {
+          success: false,
+          message: `"${p.name}"${variantLabel ? ` (${variantLabel})` : ""} only has ${currentStock} in stock`,
+        };
+      }
+
+      await Inventory.updateOne(
+        { product: productId, variant: variantId ?? null },
+        { $inc: { stock: -quantity } },
+      );
 
       const totalPrice = unitPrice * quantity;
       subtotal += totalPrice;
@@ -179,52 +153,43 @@ export async function placeOrder(input: PlaceOrderInput): Promise<ApiResponse<Or
     const discount = 0;
     const total = subtotal + shippingCost - discount;
 
-    const order = await Order.create(
-      [
-        {
-          user: session.user.id,
-          orderNumber: generateOrderNumber(),
-          shippingAddress: {
-            fullName: address.fullName,
-            phone: address.phone,
-            alternatePhone: address.alternatePhone ?? "",
-            province: address.province,
-            city: address.city,
-            area: address.area,
-            addressLine1: address.addressLine1,
-            addressLine2: address.addressLine2 ?? "",
-            postalCode: address.postalCode ?? "",
-            landmark: address.landmark ?? "",
-          },
-          status: "pending",
-          subtotal,
-          shippingCost,
-          discount,
-          total,
-          paymentMethod,
-          paymentStatus: paymentMethod === "cod" ? "pending" : "pending",
-          notes: notes || "",
-        },
-      ],
-      { session: dbSession },
-    );
+    const order = await Order.create({
+      user: session.user.id,
+      orderNumber: generateOrderNumber(),
+      shippingAddress: {
+        fullName: address.fullName,
+        phone: address.phone,
+        alternatePhone: address.alternatePhone ?? "",
+        province: address.province,
+        city: address.city,
+        area: address.area,
+        addressLine1: address.addressLine1,
+        addressLine2: address.addressLine2 ?? "",
+        postalCode: address.postalCode ?? "",
+        landmark: address.landmark ?? "",
+      },
+      status: "pending",
+      subtotal,
+      shippingCost,
+      discount,
+      total,
+      paymentMethod,
+      paymentStatus: "pending",
+      notes: notes || "",
+    });
 
-    const orderId = order[0]._id;
+    const orderId = order._id;
 
-    await OrderItem.insertMany(
-      orderItems.map((item) => ({ ...item, order: orderId })),
-      { session: dbSession },
-    );
+    await OrderItem.insertMany(orderItems.map((item) => ({ ...item, order: orderId })));
 
     cart.items = [];
-    await cart.save({ session: dbSession });
-
-    await dbSession.commitTransaction();
+    await cart.save();
 
     revalidatePath("/cart");
+    revalidatePath("/", "layout");
     revalidatePath("/account/orders");
 
-    const orderNumber = order[0].orderNumber as string;
+    const orderNumber = order.orderNumber as string;
     const orderIdStr = String(orderId);
 
     redirect(`/checkout/confirmation?orderId=${orderIdStr}`);
@@ -235,10 +200,6 @@ export async function placeOrder(input: PlaceOrderInput): Promise<ApiResponse<Or
       data: { orderId: orderIdStr, orderNumber },
     };
   } catch (error) {
-    if (dbSession.inTransaction()) {
-      await dbSession.abortTransaction();
-    }
-
     if (
       error &&
       typeof error === "object" &&
@@ -251,7 +212,5 @@ export async function placeOrder(input: PlaceOrderInput): Promise<ApiResponse<Or
 
     logger.error("Place order error:", error);
     return { success: false, message: "Something went wrong while placing your order" };
-  } finally {
-    dbSession.endSession();
   }
 }

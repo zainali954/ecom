@@ -2,6 +2,9 @@ import { connectDB } from "@/lib/db";
 import { Product } from "@/models/product";
 import { ProductVariant } from "@/models/product-variant";
 import { Inventory } from "@/models/inventory";
+// Import to register schemas for populate
+import "@/models/product-attribute";
+import "@/models/product-attribute-value";
 import { NotFoundError } from "@/lib/errors";
 import type { ProductDetail, ProductAttributeDetail, ProductVariantDetail } from "@/types/product";
 import type { CatalogProduct } from "@/types/catalog";
@@ -52,6 +55,16 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail> {
       .populate("attributes.value", "value slug")
       .lean();
 
+    const variantIds = variantDocs.map((v) => v._id);
+    const invDocs = await Inventory.find({
+      product: doc._id,
+      variant: { $in: variantIds },
+    }).lean();
+    const invMap = new Map<string, number>();
+    for (const inv of invDocs) {
+      invMap.set(String(inv.variant), (inv as Record<string, unknown>).stock as number);
+    }
+
     variants = variantDocs.map((v) => {
       const vDoc = v as Record<string, unknown>;
       const vAttrs = (vDoc.attributes as Array<Record<string, unknown>>) ?? [];
@@ -72,13 +85,12 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail> {
         price: vDoc.price as number,
         salePrice: (vDoc.salePrice as number) ?? null,
         sku: (vDoc.sku as string) ?? "",
-        stock: (vDoc.stock as number) ?? 0,
+        stock: invMap.get(String(vDoc._id)) ?? 0,
         isActive: (vDoc.isActive as boolean) ?? true,
       };
     });
   }
 
-  // Get stock from Inventory for simple products
   if (doc.type === "simple") {
     const inv = await Inventory.findOne({
       product: doc._id,

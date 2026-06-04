@@ -54,12 +54,15 @@ export async function getAdminProducts(
 
   const productIds = docs.map((d) => d._id);
 
-  const [variantCounts, inventoryDocs] = await Promise.all([
+  const [variantCounts, stockAgg] = await Promise.all([
     ProductVariant.aggregate([
       { $match: { product: { $in: productIds } } },
       { $group: { _id: "$product", count: { $sum: 1 } } },
     ]),
-    Inventory.find({ product: { $in: productIds }, variant: null }).lean(),
+    Inventory.aggregate([
+      { $match: { product: { $in: productIds } } },
+      { $group: { _id: "$product", totalStock: { $sum: "$stock" } } },
+    ]),
   ]);
 
   const variantMap = new Map<string, number>();
@@ -68,8 +71,8 @@ export async function getAdminProducts(
   }
 
   const stockMap = new Map<string, number>();
-  for (const inv of inventoryDocs) {
-    stockMap.set(String(inv.product), inv.stock);
+  for (const sa of stockAgg) {
+    stockMap.set(String(sa._id), sa.totalStock);
   }
 
   const products: AdminProduct[] = docs.map((doc) => {
@@ -146,7 +149,16 @@ export async function getAdminProductById(
     .populate("attributes.value", "value slug")
     .lean();
 
-  const inventory = await Inventory.findOne({ product: productId, variant: null }).lean();
+  const allInventory = await Inventory.find({ product: productId }).lean();
+  const invMap = new Map<string, number>();
+  let simpleStock = 0;
+  for (const inv of allInventory) {
+    if (inv.variant) {
+      invMap.set(String(inv.variant), (inv as Record<string, unknown>).stock as number);
+    } else {
+      simpleStock = (inv as Record<string, unknown>).stock as number;
+    }
+  }
 
   const adminVariants: AdminProductVariant[] = variants.map((v) => {
     const vd = v as Record<string, unknown>;
@@ -166,7 +178,7 @@ export async function getAdminProductById(
       price: vd.price as number,
       salePrice: (vd.salePrice as number) ?? null,
       sku: (vd.sku as string) ?? "",
-      stock: (vd.stock as number) ?? 0,
+      stock: invMap.get(String(vd._id)) ?? 0,
       isActive: vd.isActive as boolean,
     };
   });
@@ -201,7 +213,7 @@ export async function getAdminProductById(
     isBestSeller: (d.isBestSeller as boolean) ?? false,
     tags: (d.tags as string[]) ?? [],
     variantCount: adminVariants.length,
-    stock: inventory ? (inventory.stock as number) : 0,
+    stock: simpleStock,
     createdAt: d.createdAt
       ? new Date(d.createdAt as string).toISOString()
       : new Date().toISOString(),

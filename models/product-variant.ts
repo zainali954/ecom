@@ -43,11 +43,7 @@ const productVariantSchema = new Schema({
     trim: true,
     default: "",
   },
-  stock: {
-    type: Number,
-    default: 0,
-    min: 0,
-  },
+  // Stock is tracked in the Inventory collection, not here
   isActive: {
     type: Boolean,
     default: true,

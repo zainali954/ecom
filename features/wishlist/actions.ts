@@ -34,6 +34,7 @@ export async function toggleWishlist(productId: string): Promise<WishlistActionR
         products: [productId],
       });
       revalidatePath("/wishlist");
+      revalidatePath("/", "layout");
       return { success: true, message: "Added to wishlist" };
     }
 
@@ -45,12 +46,14 @@ export async function toggleWishlist(productId: string): Promise<WishlistActionR
       wishlist.products.splice(productIndex, 1);
       await wishlist.save();
       revalidatePath("/wishlist");
+      revalidatePath("/", "layout");
       return { success: true, message: "Removed from wishlist" };
     }
 
     wishlist.products.push(productId);
     await wishlist.save();
     revalidatePath("/wishlist");
+    revalidatePath("/", "layout");
     return { success: true, message: "Added to wishlist" };
   } catch (error) {
     logger.error("Wishlist toggle error:", error);
@@ -70,6 +73,7 @@ export async function removeFromWishlist(productId: string): Promise<WishlistAct
     await Wishlist.updateOne({ user: session.user.id }, { $pull: { products: productId } });
 
     revalidatePath("/wishlist");
+    revalidatePath("/", "layout");
     return { success: true, message: "Removed from wishlist" };
   } catch (error) {
     logger.error("Wishlist remove error:", error);

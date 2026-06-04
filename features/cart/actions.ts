@@ -33,7 +33,6 @@ export async function addToCart(
     }
 
     let price: number;
-    let availableStock: number;
 
     if (variantId) {
       const variant = await ProductVariant.findById(variantId).lean();
@@ -42,13 +41,13 @@ export async function addToCart(
       }
       const v = variant as Record<string, unknown>;
       price = (v.salePrice as number) ?? (v.price as number);
-      availableStock = (v.stock as number) ?? 0;
     } else {
       const p = product as Record<string, unknown>;
       price = (p.salePrice as number) ?? (p.basePrice as number);
-      const inv = await Inventory.findOne({ product: productId, variant: null }).lean();
-      availableStock = inv ? ((inv as Record<string, unknown>).stock as number) : 0;
     }
+
+    const inv = await Inventory.findOne({ product: productId, variant: variantId ?? null }).lean();
+    const availableStock = inv ? ((inv as Record<string, unknown>).stock as number) : 0;
 
     if (quantity > availableStock) {
       return { success: false, message: `Only ${availableStock} available in stock` };
@@ -62,6 +61,7 @@ export async function addToCart(
         items: [{ product: productId, variant: variantId, quantity, price }],
       });
       revalidatePath("/cart");
+      revalidatePath("/", "layout");
       return { success: true, message: "Added to cart" };
     }
 
@@ -84,6 +84,7 @@ export async function addToCart(
 
     await cart.save();
     revalidatePath("/cart");
+    revalidatePath("/", "layout");
     return { success: true, message: "Added to cart" };
   } catch (error) {
     logger.error("Add to cart error:", error);
@@ -117,6 +118,7 @@ export async function updateCartItemQuantity(
     await cart.save();
 
     revalidatePath("/cart");
+    revalidatePath("/", "layout");
     return { success: true, message: "Quantity updated" };
   } catch (error) {
     logger.error("Update cart quantity error:", error);
@@ -136,6 +138,7 @@ export async function removeCartItem(itemId: string): Promise<CartActionResult> 
     await Cart.updateOne({ user: session.user.id }, { $pull: { items: { _id: itemId } } });
 
     revalidatePath("/cart");
+    revalidatePath("/", "layout");
     return { success: true, message: "Removed from cart" };
   } catch (error) {
     logger.error("Remove cart item error:", error);
