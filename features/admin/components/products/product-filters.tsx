@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRef } from "react";
 import type { CategoryOption } from "@/types/admin";
+import { CsvImportDialog } from "./csv-import-dialog";
 
 interface ProductFiltersProps {
   categories: CategoryOption[];
@@ -91,9 +92,12 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
           </SelectContent>
         </Select>
       </div>
-      <Button asChild>
-        <Link href="/admin/products/new">Add Product</Link>
-      </Button>
+      <div className="flex gap-2">
+        <CsvImportDialog />
+        <Button asChild>
+          <Link href="/admin/products/new">Add Product</Link>
+        </Button>
+      </div>
     </div>
   );
 }
