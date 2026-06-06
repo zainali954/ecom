@@ -7,8 +7,9 @@ import { CheckoutForm } from "@/features/checkout/components/checkout-form";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Checkout — DollarShop",
+  title: "Checkout",
   description: "Complete your order",
+  robots: { index: false, follow: false },
 };
 
 export default async function CheckoutPage() {

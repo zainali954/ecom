@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { LoginForm } from "@/features/auth/components/login-form";
 
 export const metadata: Metadata = {
-  title: "Sign in — DollarShop",
+  title: "Sign In",
+  description: "Sign in to your DollarShop account to manage orders and track deliveries.",
 };
 
 export default function LoginPage() {

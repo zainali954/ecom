@@ -8,6 +8,7 @@ import { VariantSelector } from "./variant-selector";
 import { StockStatus } from "./stock-status";
 import { WishlistButton } from "@/features/wishlist/components/wishlist-button";
 import { AddToCartButton } from "@/features/cart/components/add-to-cart-button";
+import { ShareButton } from "./share-button";
 import type { ProductDetail, ProductVariantDetail } from "@/types/product";
 
 interface ProductInfoProps {
@@ -109,6 +110,7 @@ export function ProductInfo({ product, isWishlisted }: ProductInfoProps) {
           }
         />
         <WishlistButton productId={product.id} isWishlisted={isWishlisted} variant="default" />
+        <ShareButton productName={product.name} productSlug={product.slug} />
       </div>
 
       {/* SKU & Tags */}

@@ -3,8 +3,9 @@ import { getUserOrders } from "@/features/orders/queries";
 import { OrderList } from "@/features/orders/components/order-list";
 
 export const metadata: Metadata = {
-  title: "Orders — DollarShop",
+  title: "Orders",
   description: "View your order history",
+  robots: { index: false, follow: false },
 };
 
 export default async function OrdersPage({

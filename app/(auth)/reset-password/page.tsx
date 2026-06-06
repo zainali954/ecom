@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 
 export const metadata: Metadata = {
-  title: "Reset password — DollarShop",
+  title: "Reset Password",
+  robots: { index: false, follow: false },
 };
 
 export default async function ResetPasswordPage({

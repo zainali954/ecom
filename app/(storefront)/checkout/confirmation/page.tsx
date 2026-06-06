@@ -8,8 +8,9 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
-  title: "Order Confirmed — DollarShop",
+  title: "Order Confirmed",
   description: "Your order has been placed successfully",
+  robots: { index: false, follow: false },
 };
 
 const PAYMENT_LABELS: Record<string, string> = {

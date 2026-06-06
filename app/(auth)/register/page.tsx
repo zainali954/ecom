@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { RegisterForm } from "@/features/auth/components/register-form";
 
 export const metadata: Metadata = {
-  title: "Create account — DollarShop",
+  title: "Create Account",
+  description:
+    "Create your DollarShop account and start shopping quality products at the best prices.",
 };
 
 export default function RegisterPage() {

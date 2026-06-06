@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { HeroSection } from "@/features/home/components/hero-section";
 import { FeaturedCategories } from "@/features/home/components/featured-categories";
 import { FeaturedProducts } from "@/features/home/components/featured-products";
 import { PromotionalBanners } from "@/features/home/components/promotional-banners";
+import { generateOrganizationJsonLd, generateWebSiteJsonLd } from "@/lib/structured-data";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "DollarShop — Affordable Shopping in Pakistan",
+  },
+  description:
+    "Discover quality products at unbeatable prices. Shop new arrivals, best sellers, and featured items with fast delivery across Pakistan.",
+  alternates: { canonical: "/" },
+};
 
 function SectionSkeleton() {
   return (
@@ -22,8 +33,19 @@ function SectionSkeleton() {
 }
 
 export default function Home() {
+  const organizationJsonLd = generateOrganizationJsonLd();
+  const webSiteJsonLd = generateWebSiteJsonLd();
+
   return (
     <div className="mx-auto max-w-7xl space-y-12 px-4 py-8 sm:px-6 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
+      />
       <Suspense
         fallback={
           <div className="min-h-[320px] animate-pulse rounded-xl bg-muted sm:min-h-[400px]" />

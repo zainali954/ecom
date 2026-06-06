@@ -8,6 +8,7 @@ import { FilterSidebar } from "@/features/catalog/components/filter-sidebar";
 import { ProductGrid } from "@/features/catalog/components/product-grid";
 import { Pagination } from "@/features/catalog/components/pagination";
 import { NotFoundError } from "@/lib/errors";
+import { generateBreadcrumbJsonLd } from "@/lib/structured-data";
 import type { CatalogSearchParams } from "@/types/catalog";
 
 interface CategoryPageProps {
@@ -20,12 +21,22 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
   try {
     const { category } = await getProductsByCategory(slug, {});
+    const description = category.description || `Shop ${category.name} products at DollarShop`;
+
     return {
-      title: `${category.name} — DollarShop`,
-      description: category.description || `Shop ${category.name} products`,
+      title: category.name,
+      description,
+      alternates: { canonical: `/category/${slug}` },
+      openGraph: {
+        title: category.name,
+        description,
+        ...(category.image && {
+          images: [{ url: category.image, alt: category.name }],
+        }),
+      },
     };
   } catch {
-    return { title: "Category — DollarShop" };
+    return { title: "Category" };
   }
 }
 
@@ -42,8 +53,17 @@ export default async function CategoryDetailPage({ params, searchParams }: Categ
 
   const priceRange = await getPriceRange();
 
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: result.category.name, url: `/category/${result.category.slug}` },
+  ]);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <CategoryBanner category={result.category} />
 
       <div className="mt-8 flex gap-8">

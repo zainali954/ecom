@@ -9,8 +9,10 @@ import { Pagination } from "@/features/catalog/components/pagination";
 import type { CatalogSearchParams } from "@/types/catalog";
 
 export const metadata: Metadata = {
-  title: "Products — DollarShop",
-  description: "Browse our complete product collection",
+  title: "Products",
+  description:
+    "Browse our complete product collection. Find the best deals on quality products with fast delivery across Pakistan.",
+  alternates: { canonical: "/products" },
 };
 
 interface ProductsPageProps {

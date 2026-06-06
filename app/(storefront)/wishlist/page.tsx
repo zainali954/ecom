@@ -6,8 +6,9 @@ import { RemoveWishlistButton } from "@/features/wishlist/components/remove-wish
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Wishlist — DollarShop",
+  title: "Wishlist",
   description: "Your saved products",
+  robots: { index: false, follow: false },
 };
 
 export default async function WishlistPage() {

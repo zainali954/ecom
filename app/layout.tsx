@@ -17,8 +17,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DollarShop",
-  description: "Modern e-commerce platform for Pakistan",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://dollarshop.pk"),
+  title: {
+    default: "DollarShop — Affordable Shopping in Pakistan",
+    template: "%s — DollarShop",
+  },
+  description:
+    "Shop quality products at unbeatable prices. Pakistan's modern e-commerce platform with fast delivery.",
+  keywords: ["online shopping pakistan", "dollarshop", "affordable products", "ecommerce pakistan"],
+  openGraph: {
+    type: "website",
+    locale: "en_PK",
+    siteName: "DollarShop",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

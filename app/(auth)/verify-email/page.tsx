@@ -3,7 +3,8 @@ import Link from "next/link";
 import { verifyEmail } from "@/features/auth/actions";
 
 export const metadata: Metadata = {
-  title: "Verify email — DollarShop",
+  title: "Verify Email",
+  robots: { index: false, follow: false },
 };
 
 export default async function VerifyEmailPage({

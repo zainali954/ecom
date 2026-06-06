@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "My Account — DollarShop",
+  title: "My Account",
+  description: "Manage your account settings and view your orders",
+  robots: { index: false, follow: false },
 };
 
 export default function AccountPage() {

@@ -4,8 +4,9 @@ import { getOrderDetail } from "@/features/orders/queries";
 import { OrderDetailView } from "@/features/orders/components/order-detail-view";
 
 export const metadata: Metadata = {
-  title: "Order Details — DollarShop",
+  title: "Order Details",
   description: "View your order details and tracking status",
+  robots: { index: false, follow: false },
 };
 
 export default async function OrderDetailPage({

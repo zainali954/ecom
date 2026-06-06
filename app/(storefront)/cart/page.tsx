@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
-  title: "Cart — DollarShop",
+  title: "Cart",
   description: "Your shopping cart",
+  robots: { index: false, follow: false },
 };
 
 export default async function CartPage() {

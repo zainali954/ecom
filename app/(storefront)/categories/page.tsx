@@ -3,8 +3,10 @@ import { getAllCategories } from "@/features/catalog/queries";
 import { CategoryCard } from "@/features/home/components/category-card";
 
 export const metadata: Metadata = {
-  title: "Categories — DollarShop",
-  description: "Browse all product categories",
+  title: "Categories",
+  description:
+    "Browse all product categories. Shop by category to find exactly what you need at DollarShop.",
+  alternates: { canonical: "/categories" },
 };
 
 export default async function CategoriesPage() {
