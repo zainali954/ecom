@@ -15,6 +15,11 @@ export const adminNavItems = [
     icon: "categories",
   },
   {
+    label: "Attributes",
+    href: "/admin/attributes",
+    icon: "attributes",
+  },
+  {
     label: "Products",
     href: "/admin/products",
     icon: "products",

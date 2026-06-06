@@ -188,6 +188,25 @@ export interface AdminCouponsPageData {
   totalPages: number;
 }
 
+export interface AdminAttribute {
+  id: string;
+  name: string;
+  slug: string;
+  affectsPrice: boolean;
+  affectsStock: boolean;
+  affectsSku: boolean;
+  valueCount: number;
+  values: { id: string; value: string; slug: string }[];
+  createdAt: string;
+}
+
+export interface AdminAttributesPageData {
+  attributes: AdminAttribute[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
 export interface AttributeOption {
   id: string;
   name: string;
