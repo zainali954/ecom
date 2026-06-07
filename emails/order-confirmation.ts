@@ -1,3 +1,16 @@
+import {
+  emailLayout,
+  emailHeading,
+  emailText,
+  emailSmallText,
+  BRAND_COLOR,
+  BRAND_COLOR_LIGHT,
+  TEXT_PRIMARY,
+  TEXT_SECONDARY,
+  TEXT_MUTED,
+  BORDER_COLOR,
+} from "./layout";
+
 interface OrderConfirmationItem {
   name: string;
   variantLabel: string;
@@ -26,85 +39,86 @@ export function getOrderConfirmationHtml(data: OrderConfirmationData): string {
   const itemRows = data.items
     .map(
       (item) => `
-        <tr>
-          <td style="padding:8px 0;border-bottom:1px solid #e4e4e7;font-size:14px;color:#09090b;">
-            ${item.name}${item.variantLabel ? `<br/><span style="font-size:12px;color:#71717a;">${item.variantLabel}</span>` : ""}
-          </td>
-          <td style="padding:8px 0;border-bottom:1px solid #e4e4e7;font-size:14px;color:#71717a;text-align:center;">${item.quantity}</td>
-          <td style="padding:8px 0;border-bottom:1px solid #e4e4e7;font-size:14px;color:#09090b;text-align:right;">${formatPrice(item.totalPrice)}</td>
-        </tr>`,
+      <tr>
+        <td style="padding:12px 0;border-bottom:1px solid ${BORDER_COLOR};font-size:14px;color:${TEXT_PRIMARY};">
+          <strong>${item.name}</strong>
+          ${item.variantLabel ? `<br/><span style="font-size:12px;color:${TEXT_SECONDARY};">${item.variantLabel}</span>` : ""}
+        </td>
+        <td style="padding:12px 0;border-bottom:1px solid ${BORDER_COLOR};font-size:14px;color:${TEXT_SECONDARY};text-align:center;">${item.quantity}</td>
+        <td style="padding:12px 0;border-bottom:1px solid ${BORDER_COLOR};font-size:14px;color:${TEXT_PRIMARY};text-align:right;font-weight:500;">${formatPrice(item.totalPrice)}</td>
+      </tr>`,
     )
     .join("");
 
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 20px;">
-    <tr>
-      <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:12px;padding:40px;border:1px solid #e4e4e7;">
-          <tr>
-            <td>
-              <h1 style="margin:0 0 8px;font-size:20px;font-weight:600;color:#09090b;">Order Confirmed!</h1>
-              <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#71717a;">Hi ${data.customerName}, thank you for your order. We've received it and will begin processing shortly.</p>
+  const content = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+      <tr>
+        <td>
+          ${emailHeading("Order Confirmed! &#10003;")}
+          ${emailText(`Hi ${data.customerName}, thank you for your order! We've received it and will begin processing shortly.`)}
+        </td>
+      </tr>
+    </table>
 
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;padding:16px;background:#f4f4f5;border-radius:8px;">
-                <tr>
-                  <td style="font-size:12px;color:#71717a;">Order Number</td>
-                  <td style="font-size:14px;font-weight:600;color:#09090b;text-align:right;">${data.orderNumber}</td>
-                </tr>
-                <tr>
-                  <td style="font-size:12px;color:#71717a;padding-top:8px;">Payment</td>
-                  <td style="font-size:14px;color:#09090b;text-align:right;padding-top:8px;">${data.paymentMethod}</td>
-                </tr>
-              </table>
+    <!-- Order Info Banner -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-radius:8px;overflow:hidden;">
+      <tr>
+        <td style="background:${BRAND_COLOR};padding:16px 20px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td>
+                <p style="margin:0;font-size:11px;font-weight:500;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:0.5px;">Order Number</p>
+                <p style="margin:4px 0 0;font-size:16px;font-weight:700;color:#ffffff;">${data.orderNumber}</p>
+              </td>
+              <td align="right">
+                <p style="margin:0;font-size:11px;font-weight:500;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:0.5px;">Payment</p>
+                <p style="margin:4px 0 0;font-size:14px;font-weight:500;color:#ffffff;">${data.paymentMethod}</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
 
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
-                <tr>
-                  <th style="padding:8px 0;border-bottom:2px solid #e4e4e7;font-size:12px;font-weight:500;color:#71717a;text-align:left;">Item</th>
-                  <th style="padding:8px 0;border-bottom:2px solid #e4e4e7;font-size:12px;font-weight:500;color:#71717a;text-align:center;">Qty</th>
-                  <th style="padding:8px 0;border-bottom:2px solid #e4e4e7;font-size:12px;font-weight:500;color:#71717a;text-align:right;">Price</th>
-                </tr>
-                ${itemRows}
-              </table>
+    <!-- Items Table -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+      <tr>
+        <th style="padding:8px 0;border-bottom:2px solid ${BORDER_COLOR};font-size:11px;font-weight:600;color:${TEXT_MUTED};text-align:left;text-transform:uppercase;letter-spacing:0.5px;">Item</th>
+        <th style="padding:8px 0;border-bottom:2px solid ${BORDER_COLOR};font-size:11px;font-weight:600;color:${TEXT_MUTED};text-align:center;text-transform:uppercase;letter-spacing:0.5px;">Qty</th>
+        <th style="padding:8px 0;border-bottom:2px solid ${BORDER_COLOR};font-size:11px;font-weight:600;color:${TEXT_MUTED};text-align:right;text-transform:uppercase;letter-spacing:0.5px;">Price</th>
+      </tr>
+      ${itemRows}
+    </table>
 
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-                <tr>
-                  <td style="padding:4px 0;font-size:13px;color:#71717a;">Subtotal</td>
-                  <td style="padding:4px 0;font-size:13px;color:#09090b;text-align:right;">${formatPrice(data.subtotal)}</td>
-                </tr>
-                <tr>
-                  <td style="padding:4px 0;font-size:13px;color:#71717a;">Shipping</td>
-                  <td style="padding:4px 0;font-size:13px;color:#09090b;text-align:right;">${data.shippingCost > 0 ? formatPrice(data.shippingCost) : "Free"}</td>
-                </tr>
-                ${data.discount > 0 ? `<tr><td style="padding:4px 0;font-size:13px;color:#71717a;">Discount</td><td style="padding:4px 0;font-size:13px;color:#dc2626;text-align:right;">-${formatPrice(data.discount)}</td></tr>` : ""}
-                <tr>
-                  <td style="padding:8px 0 0;font-size:15px;font-weight:600;color:#09090b;border-top:1px solid #e4e4e7;">Total</td>
-                  <td style="padding:8px 0 0;font-size:15px;font-weight:600;color:#09090b;text-align:right;border-top:1px solid #e4e4e7;">${formatPrice(data.total)}</td>
-                </tr>
-              </table>
+    <!-- Totals -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+      <tr>
+        <td style="padding:6px 0;font-size:13px;color:${TEXT_SECONDARY};">Subtotal</td>
+        <td style="padding:6px 0;font-size:13px;color:${TEXT_PRIMARY};text-align:right;">${formatPrice(data.subtotal)}</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;font-size:13px;color:${TEXT_SECONDARY};">Shipping</td>
+        <td style="padding:6px 0;font-size:13px;color:${TEXT_PRIMARY};text-align:right;">${data.shippingCost > 0 ? formatPrice(data.shippingCost) : '<span style="color:#16a34a;font-weight:500;">Free</span>'}</td>
+      </tr>
+      ${data.discount > 0 ? `<tr><td style="padding:6px 0;font-size:13px;color:${TEXT_SECONDARY};">Discount</td><td style="padding:6px 0;font-size:13px;color:#dc2626;font-weight:500;text-align:right;">-${formatPrice(data.discount)}</td></tr>` : ""}
+      <tr>
+        <td style="padding:12px 0 0;font-size:16px;font-weight:700;color:${TEXT_PRIMARY};border-top:2px solid ${BORDER_COLOR};">Total</td>
+        <td style="padding:12px 0 0;font-size:16px;font-weight:700;color:${BRAND_COLOR};text-align:right;border-top:2px solid ${BORDER_COLOR};">${formatPrice(data.total)}</td>
+      </tr>
+    </table>
 
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;padding:16px;background:#f4f4f5;border-radius:8px;">
-                <tr>
-                  <td>
-                    <p style="margin:0 0 4px;font-size:12px;font-weight:500;color:#71717a;">Shipping To</p>
-                    <p style="margin:0;font-size:13px;line-height:1.5;color:#09090b;">${data.shippingAddress}</p>
-                  </td>
-                </tr>
-              </table>
+    <!-- Shipping Address -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;background:${BRAND_COLOR_LIGHT};border-radius:8px;">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:600;color:${BRAND_COLOR};text-transform:uppercase;letter-spacing:0.5px;">Shipping To</p>
+          <p style="margin:0;font-size:13px;line-height:1.6;color:${TEXT_PRIMARY};">${data.shippingAddress}</p>
+        </td>
+      </tr>
+    </table>
 
-              <p style="margin:0;font-size:12px;line-height:1.5;color:#a1a1aa;">If you have any questions about your order, just reply to this email. Thank you for shopping with DollarShop!</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
+    ${emailSmallText("If you have any questions about your order, just reply to this email. Thank you for shopping with DollarShop!")}
+  `;
+
+  return emailLayout(content, `Order ${data.orderNumber} confirmed — DollarShop`);
 }

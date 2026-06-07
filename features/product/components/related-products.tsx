@@ -4,9 +4,10 @@ import type { CatalogProduct } from "@/types/catalog";
 
 interface RelatedProductsProps {
   products: CatalogProduct[];
+  wishlistedIds?: Set<string>;
 }
 
-export function RelatedProducts({ products }: RelatedProductsProps) {
+export function RelatedProducts({ products, wishlistedIds = new Set() }: RelatedProductsProps) {
   if (products.length === 0) return null;
 
   return (
@@ -24,6 +25,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
               price={product.basePrice}
               salePrice={product.salePrice}
               image={product.image}
+              isWishlisted={wishlistedIds.has(product.id)}
             />
           ))}
         </div>

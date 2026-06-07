@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/db";
 import { Product } from "@/models/product";
+import { getWishlistProductIds } from "@/features/wishlist/queries";
 import { SectionHeader } from "./section-header";
 import { ProductCard } from "./product-card";
 
@@ -18,10 +19,13 @@ export async function FeaturedProducts({
 }: FeaturedProductsProps) {
   await connectDB();
 
-  const products = await Product.find({ isActive: true, ...filter })
-    .sort({ createdAt: -1 })
-    .limit(8)
-    .lean();
+  const [products, wishlistedIds] = await Promise.all([
+    Product.find({ isActive: true, ...filter })
+      .sort({ createdAt: -1 })
+      .limit(8)
+      .lean(),
+    getWishlistProductIds(),
+  ]);
 
   if (products.length === 0) {
     return (
@@ -45,6 +49,7 @@ export async function FeaturedProducts({
             price={product.basePrice}
             salePrice={product.salePrice}
             image={product.images?.[0]?.url}
+            isWishlisted={wishlistedIds.has(String(product._id))}
           />
         ))}
       </div>

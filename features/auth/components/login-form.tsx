@@ -2,9 +2,9 @@
 
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { login } from "@/features/auth/actions";
+import { login, resendVerificationEmail } from "@/features/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,26 +14,64 @@ const initialState: AuthActionState = { success: false, message: "" };
 
 export function LoginForm() {
   const [state, formAction, isPending] = useActionState(login, initialState);
+  const [resendState, resendAction, isResending] = useActionState(
+    resendVerificationEmail,
+    initialState,
+  );
   const router = useRouter();
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  const isEmailNotVerified = state.errors?.emailNotVerified;
 
   useEffect(() => {
     if (state.success) {
-      router.push("/");
+      const params = new URLSearchParams(window.location.search);
+      const callbackUrl = params.get("callbackUrl") ?? "/";
+      router.push(callbackUrl);
       router.refresh();
     }
   }, [state.success, router]);
 
   return (
     <form action={formAction} className="space-y-4">
-      {state.message && !state.success && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
-          {state.message}
+      {isEmailNotVerified ? (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 space-y-3">
+          <p className="text-sm text-amber-800">{state.message}</p>
+          {resendState.success ? (
+            <p className="text-sm font-medium text-green-700">{resendState.message}</p>
+          ) : (
+            <button
+              type="button"
+              disabled={isResending}
+              className="text-sm font-medium text-amber-900 underline underline-offset-2 hover:text-amber-700 disabled:opacity-50"
+              onClick={() => {
+                const email = emailRef.current?.value;
+                if (!email) return;
+                const fd = new FormData();
+                fd.set("email", email);
+                resendAction(fd);
+              }}
+            >
+              {isResending ? "Sending..." : "Resend verification email"}
+            </button>
+          )}
+          {resendState.message && !resendState.success && (
+            <p className="text-sm text-destructive">{resendState.message}</p>
+          )}
         </div>
+      ) : (
+        state.message &&
+        !state.success && (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+            {state.message}
+          </div>
+        )
       )}
 
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
+          ref={emailRef}
           id="email"
           name="email"
           type="email"

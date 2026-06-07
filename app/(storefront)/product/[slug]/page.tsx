@@ -97,7 +97,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
 
       {/* Related products */}
       <div className="mt-12">
-        <RelatedProducts products={relatedProducts} />
+        <RelatedProducts products={relatedProducts} wishlistedIds={wishlistIds} />
       </div>
     </div>
   );

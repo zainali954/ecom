@@ -53,7 +53,7 @@ export function WishlistButton({
   return (
     <Button
       variant="outline"
-      size="lg"
+      size="icon-lg"
       onClick={handleToggle}
       disabled={isPending}
       className={className}

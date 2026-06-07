@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,6 +11,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { AddressForm } from "./address-form";
 import { AddressCard } from "./address-card";
 import type { AddressDetail } from "@/types/address";
@@ -21,6 +30,7 @@ interface AddressListProps {
 export function AddressList({ addresses }: AddressListProps) {
   const [open, setOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<AddressDetail | null>(null);
+  const isDesktop = useMediaQuery("(min-width: 640px)");
 
   function handleEdit(address: AddressDetail) {
     setEditingAddress(address);
@@ -37,6 +47,11 @@ export function AddressList({ addresses }: AddressListProps) {
     setOpen(true);
   }
 
+  const title = editingAddress ? "Edit Address" : "Add New Address";
+  const description = editingAddress
+    ? "Update your delivery address details."
+    : "Enter your delivery address details.";
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -48,24 +63,40 @@ export function AddressList({ addresses }: AddressListProps) {
               : `${addresses.length} ${addresses.length === 1 ? "address" : "addresses"} saved`}
           </p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm" onClick={handleAddNew}>
-              Add Address
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-            <DialogHeader>
-              <DialogTitle>{editingAddress ? "Edit Address" : "Add New Address"}</DialogTitle>
-              <DialogDescription>
-                {editingAddress
-                  ? "Update your delivery address details."
-                  : "Enter your delivery address details."}
-              </DialogDescription>
-            </DialogHeader>
-            <AddressForm address={editingAddress} onSuccess={handleClose} />
-          </DialogContent>
-        </Dialog>
+
+        {isDesktop ? (
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" onClick={handleAddNew}>
+                Add Address
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>{title}</DialogTitle>
+                <DialogDescription>{description}</DialogDescription>
+              </DialogHeader>
+              <AddressForm address={editingAddress} onSuccess={handleClose} />
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerTrigger asChild>
+              <Button size="sm" onClick={handleAddNew}>
+                Add Address
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader className="text-left">
+                <DrawerTitle>{title}</DrawerTitle>
+                <DrawerDescription>{description}</DrawerDescription>
+              </DrawerHeader>
+              <div className="max-h-[70vh] overflow-y-auto px-4 pb-6">
+                <AddressForm address={editingAddress} onSuccess={handleClose} />
+              </div>
+            </DrawerContent>
+          </Drawer>
+        )}
       </div>
 
       {addresses.length === 0 ? (

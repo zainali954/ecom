@@ -3,9 +3,10 @@ import type { CatalogProduct } from "@/types/catalog";
 
 interface ProductGridProps {
   products: CatalogProduct[];
+  wishlistedIds?: Set<string>;
 }
 
-export function ProductGrid({ products }: ProductGridProps) {
+export function ProductGrid({ products, wishlistedIds = new Set() }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -28,6 +29,7 @@ export function ProductGrid({ products }: ProductGridProps) {
           price={product.basePrice}
           salePrice={product.salePrice}
           image={product.image}
+          isWishlisted={wishlistedIds.has(product.id)}
         />
       ))}
     </div>

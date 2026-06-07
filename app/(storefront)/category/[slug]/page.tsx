@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductsByCategory, getPriceRange } from "@/features/catalog/queries";
+import { getWishlistProductIds } from "@/features/wishlist/queries";
 import { CategoryBanner } from "@/features/catalog/components/category-banner";
 import { CatalogToolbar } from "@/features/catalog/components/catalog-toolbar";
 import { ActiveFilters } from "@/features/catalog/components/active-filters";
@@ -51,7 +52,7 @@ export default async function CategoryDetailPage({ params, searchParams }: Categ
     throw error;
   }
 
-  const priceRange = await getPriceRange();
+  const [priceRange, wishlistedIds] = await Promise.all([getPriceRange(), getWishlistProductIds()]);
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", url: "/" },
@@ -78,7 +79,7 @@ export default async function CategoryDetailPage({ params, searchParams }: Categ
             showCategoryFilter={false}
           />
           <ActiveFilters />
-          <ProductGrid products={result.products} />
+          <ProductGrid products={result.products} wishlistedIds={wishlistedIds} />
           <Pagination pagination={result.pagination} />
         </div>
       </div>

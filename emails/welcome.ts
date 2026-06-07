@@ -1,27 +1,49 @@
+import {
+  emailLayout,
+  emailButton,
+  emailHeading,
+  emailText,
+  emailDivider,
+  emailSmallText,
+  TEXT_PRIMARY,
+} from "./layout";
+
 export function getWelcomeHtml(name: string): string {
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 20px;">
+  const features = [
+    { icon: "&#128722;", title: "Wide Selection", desc: "Browse thousands of quality products" },
+    { icon: "&#128666;", title: "Fast Delivery", desc: "Quick shipping across Pakistan" },
+    { icon: "&#128274;", title: "Secure Shopping", desc: "Safe payments and buyer protection" },
+  ];
+
+  const featuresHtml = features
+    .map(
+      (f) => `
     <tr>
-      <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;background:#ffffff;border-radius:12px;padding:40px;border:1px solid #e4e4e7;">
+      <td style="padding:8px 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0">
           <tr>
+            <td style="vertical-align:top;padding-right:12px;font-size:20px;">${f.icon}</td>
             <td>
-              <h1 style="margin:0 0 8px;font-size:20px;font-weight:600;color:#09090b;">Welcome to DollarShop!</h1>
-              <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#71717a;">Hi ${name}, thanks for joining DollarShop. Start exploring our collection and find great deals.</p>
-              <p style="margin:0;font-size:12px;line-height:1.5;color:#a1a1aa;">Happy shopping!</p>
+              <p style="margin:0 0 2px;font-size:14px;font-weight:600;color:${TEXT_PRIMARY};">${f.title}</p>
+              <p style="margin:0;font-size:13px;color:#71717a;">${f.desc}</p>
             </td>
           </tr>
         </table>
       </td>
-    </tr>
-  </table>
-</body>
-</html>`;
+    </tr>`,
+    )
+    .join("");
+
+  const content = `
+    ${emailHeading(`Welcome to DollarShop, ${name}!`)}
+    ${emailText("Your account is all set up. We're excited to have you on board — here's what you can look forward to:")}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 8px;">
+      ${featuresHtml}
+    </table>
+    ${emailDivider()}
+    ${emailButton(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000", "Start Shopping")}
+    ${emailSmallText("Happy shopping! — The DollarShop Team")}
+  `;
+
+  return emailLayout(content, `Welcome to DollarShop, ${name}! Start exploring great deals.`);
 }

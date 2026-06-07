@@ -119,6 +119,14 @@ export async function login(
     return { success: true, message: "Logged in successfully" };
   } catch (error) {
     if (error instanceof AuthError) {
+      if (error.cause?.err?.message === "EMAIL_NOT_VERIFIED") {
+        return {
+          success: false,
+          message:
+            "Please verify your email before signing in. Check your inbox for the verification link.",
+          errors: { emailNotVerified: ["true"] },
+        };
+      }
       return { success: false, message: "Invalid email or password" };
     }
     throw error;
@@ -128,6 +136,57 @@ export async function login(
 export async function logout(): Promise<void> {
   await signOut({ redirect: false });
   redirect("/login");
+}
+
+export async function resendVerificationEmail(
+  _prevState: AuthActionState,
+  formData: FormData,
+): Promise<AuthActionState> {
+  const email = formData.get("email") as string;
+
+  if (!email) {
+    return { success: false, message: "Please enter your email address" };
+  }
+
+  try {
+    await connectDB();
+
+    const user = await User.findOne({ email, isActive: true }).lean();
+
+    if (!user) {
+      return {
+        success: true,
+        message: "If an account with that email exists, we've sent a new verification link.",
+      };
+    }
+
+    if (user.emailVerified) {
+      return { success: false, message: "This email is already verified. You can sign in." };
+    }
+
+    await VerificationToken.deleteMany({ email, type: "email-verify" });
+
+    const token = generateToken();
+    await VerificationToken.create({
+      token,
+      email,
+      type: "email-verify",
+      expiresAt: new Date(Date.now() + VERIFY_TOKEN_EXPIRY_HOURS * 60 * 60 * 1000),
+    });
+
+    await sendVerificationEmail(email, token);
+    logger.info("Verification email resent", { email });
+
+    return {
+      success: true,
+      message: "Verification email sent! Please check your inbox.",
+    };
+  } catch (error) {
+    logger.error("Resend verification failed", {
+      error: error instanceof Error ? error.message : error,
+    });
+    return { success: false, message: "Something went wrong. Please try again." };
+  }
 }
 
 export async function forgotPassword(

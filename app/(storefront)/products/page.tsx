@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getProducts, getCategoriesForFilter, getPriceRange } from "@/features/catalog/queries";
+import { getWishlistProductIds } from "@/features/wishlist/queries";
 import { SearchInput } from "@/features/catalog/components/search-input";
 import { CatalogToolbar } from "@/features/catalog/components/catalog-toolbar";
 import { ActiveFilters } from "@/features/catalog/components/active-filters";
@@ -21,10 +22,11 @@ interface ProductsPageProps {
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const params = await searchParams;
-  const [result, categories, priceRange] = await Promise.all([
+  const [result, categories, priceRange, wishlistedIds] = await Promise.all([
     getProducts(params),
     getCategoriesForFilter(),
     getPriceRange(),
+    getWishlistProductIds(),
   ]);
 
   return (
@@ -57,7 +59,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             showCategoryFilter={true}
           />
           <ActiveFilters categories={categories} />
-          <ProductGrid products={result.products} />
+          <ProductGrid products={result.products} wishlistedIds={wishlistedIds} />
           <Pagination pagination={result.pagination} />
         </div>
       </div>

@@ -5,7 +5,10 @@ const envSchema = z.object({
   MONGODB_URI: z.string().min(1),
   NEXT_PUBLIC_APP_URL: z.string().url().optional(),
   AUTH_SECRET: z.string().min(1),
-  RESEND_API_KEY: z.string().min(1),
+  MAILTRAP_HOST: z.string().min(1),
+  MAILTRAP_PORT: z.coerce.number().int().positive(),
+  MAILTRAP_USERNAME: z.string().min(1),
+  MAILTRAP_PASSWORD: z.string().min(1),
 });
 
 type Env = z.infer<typeof envSchema>;

@@ -1,3 +1,15 @@
+import {
+  emailLayout,
+  emailButton,
+  emailHeading,
+  emailText,
+  emailSmallText,
+  emailInfoBox,
+  BRAND_COLOR,
+  TEXT_PRIMARY,
+  TEXT_MUTED,
+} from "./layout";
+
 interface OrderStatusData {
   customerName: string;
   orderNumber: string;
@@ -5,14 +17,38 @@ interface OrderStatusData {
   newStatus: string;
 }
 
-const STATUS_MESSAGES: Record<string, string> = {
-  confirmed: "Your order has been confirmed and is being prepared.",
-  processing: "Your order is now being processed and will be shipped soon.",
-  shipped: "Great news! Your order has been shipped and is on its way.",
-  delivered: "Your order has been delivered. We hope you enjoy your purchase!",
-  cancelled: "Your order has been cancelled. If you have questions, please contact us.",
-  refunded:
-    "A refund has been initiated for your order. It may take a few business days to appear.",
+const STATUS_CONFIG: Record<string, { emoji: string; message: string; color: string }> = {
+  confirmed: {
+    emoji: "&#9989;",
+    message: "Your order has been confirmed and is being prepared for processing.",
+    color: "#16a34a",
+  },
+  processing: {
+    emoji: "&#9881;&#65039;",
+    message: "Your order is now being processed and will be shipped soon.",
+    color: "#2563eb",
+  },
+  shipped: {
+    emoji: "&#128666;",
+    message: "Great news! Your order has been shipped and is on its way to you.",
+    color: "#7c3aed",
+  },
+  delivered: {
+    emoji: "&#127881;",
+    message: "Your order has been delivered. We hope you enjoy your purchase!",
+    color: "#16a34a",
+  },
+  cancelled: {
+    emoji: "&#10060;",
+    message: "Your order has been cancelled. If you have questions, please contact us.",
+    color: "#dc2626",
+  },
+  refunded: {
+    emoji: "&#128176;",
+    message:
+      "A refund has been initiated for your order. It may take a few business days to appear in your account.",
+    color: "#ea580c",
+  },
 };
 
 function capitalizeStatus(status: string) {
@@ -20,46 +56,49 @@ function capitalizeStatus(status: string) {
 }
 
 export function getOrderStatusUpdatedHtml(data: OrderStatusData): string {
-  const message =
-    STATUS_MESSAGES[data.newStatus] ?? `Your order status has been updated to ${data.newStatus}.`;
+  const config = STATUS_CONFIG[data.newStatus] ?? {
+    emoji: "&#128230;",
+    message: `Your order status has been updated to ${data.newStatus}.`,
+    color: BRAND_COLOR,
+  };
 
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 20px;">
-    <tr>
-      <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;background:#ffffff;border-radius:12px;padding:40px;border:1px solid #e4e4e7;">
-          <tr>
-            <td>
-              <h1 style="margin:0 0 8px;font-size:20px;font-weight:600;color:#09090b;">Order Update</h1>
-              <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#71717a;">Hi ${data.customerName}, here's an update on your order.</p>
+  const content = `
+    ${emailHeading("Order Status Update")}
+    ${emailText(`Hi ${data.customerName}, here's an update on your order.`)}
 
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;padding:16px;background:#f4f4f5;border-radius:8px;">
-                <tr>
-                  <td style="font-size:12px;color:#71717a;">Order Number</td>
-                  <td style="font-size:14px;font-weight:600;color:#09090b;text-align:right;">${data.orderNumber}</td>
-                </tr>
-                <tr>
-                  <td style="font-size:12px;color:#71717a;padding-top:8px;">Status</td>
-                  <td style="font-size:14px;font-weight:600;color:#09090b;text-align:right;padding-top:8px;">${capitalizeStatus(data.newStatus)}</td>
-                </tr>
-              </table>
+    <!-- Status Card -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;">
+      <tr>
+        <td style="padding:20px;background:#fafafa;border-radius:8px;border:1px solid #e4e4e7;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="font-size:11px;font-weight:600;color:${TEXT_MUTED};text-transform:uppercase;letter-spacing:0.5px;">Order Number</td>
+              <td style="font-size:14px;font-weight:700;color:${TEXT_PRIMARY};text-align:right;">${data.orderNumber}</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="padding:12px 0;">
+                <hr style="margin:0;border:none;border-top:1px solid #e4e4e7;" />
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:11px;font-weight:600;color:${TEXT_MUTED};text-transform:uppercase;letter-spacing:0.5px;">Status</td>
+              <td style="text-align:right;">
+                <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;color:#ffffff;background:${config.color};">
+                  ${config.emoji} ${capitalizeStatus(data.newStatus)}
+                </span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
 
-              <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#09090b;">${message}</p>
+    ${emailInfoBox(`<p style="margin:0;font-size:14px;line-height:1.6;color:${TEXT_PRIMARY};">${config.message}</p>`)}
 
-              <p style="margin:0;font-size:12px;line-height:1.5;color:#a1a1aa;">If you have any questions, just reply to this email. Thank you for shopping with DollarShop!</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
+    ${emailButton(`${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/account/orders`, "View Order Details")}
+
+    ${emailSmallText("If you have any questions, just reply to this email. Thank you for shopping with DollarShop!")}
+  `;
+
+  return emailLayout(content, `Order ${data.orderNumber} — ${capitalizeStatus(data.newStatus)}`);
 }

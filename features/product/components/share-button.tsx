@@ -128,7 +128,12 @@ export function ShareButton({ productName, productSlug }: ShareButtonProps) {
 
   if (supportsNativeShare) {
     return (
-      <Button variant="outline" size="icon" onClick={handleNativeShare} aria-label="Share product">
+      <Button
+        variant="outline"
+        size="icon-lg"
+        onClick={handleNativeShare}
+        aria-label="Share product"
+      >
         <ShareIcon />
       </Button>
     );
@@ -137,7 +142,7 @@ export function ShareButton({ productName, productSlug }: ShareButtonProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Share product">
+        <Button variant="outline" size="icon-lg" aria-label="Share product">
           <ShareIcon />
         </Button>
       </DropdownMenuTrigger>
