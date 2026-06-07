@@ -117,8 +117,8 @@ export function getOrderConfirmationHtml(data: OrderConfirmationData): string {
       </tr>
     </table>
 
-    ${emailSmallText("If you have any questions about your order, just reply to this email. Thank you for shopping with DollarShop!")}
+    ${emailSmallText("If you have any questions about your order, just reply to this email. Thank you for shopping with ShopRehan!")}
   `;
 
-  return emailLayout(content, `Order ${data.orderNumber} confirmed — DollarShop`);
+  return emailLayout(content, `Order ${data.orderNumber} confirmed — ShopRehan`);
 }

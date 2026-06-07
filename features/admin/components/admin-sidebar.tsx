@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -31,9 +32,13 @@ export function AdminSidebar({
         )}
       >
         {!collapsed && (
-          <Link href="/admin" className="text-sm font-semibold tracking-tight">
-            DollarShop
-            <span className="ml-1.5 text-xs font-normal text-muted-foreground">Admin</span>
+          <Link
+            href="/admin"
+            className="flex items-center gap-2 text-sm font-semibold tracking-tight"
+          >
+            <Image src="/logo.svg" alt="ShopRehan" width={28} height={28} />
+            ShopRehan
+            <span className="text-xs font-normal text-muted-foreground">Admin</span>
           </Link>
         )}
         <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onToggle}>

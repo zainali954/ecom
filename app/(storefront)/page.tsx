@@ -8,7 +8,7 @@ import { generateOrganizationJsonLd, generateWebSiteJsonLd } from "@/lib/structu
 
 export const metadata: Metadata = {
   title: {
-    absolute: "DollarShop — Affordable Shopping in Pakistan",
+    absolute: "ShopRehan — Affordable Shopping in Pakistan",
   },
   description:
     "Discover quality products at unbeatable prices. Shop new arrivals, best sellers, and featured items with fast delivery across Pakistan.",

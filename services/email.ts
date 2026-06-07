@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const FROM_EMAIL = "DollarShop <noreply@dollarshop.pk>";
+const FROM_EMAIL = "ShopRehan <noreply@shoprehan.com>";
 
 export async function sendVerificationEmail(email: string, token: string): Promise<void> {
   const url = `${env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/verify-email?token=${token}`;
@@ -27,7 +27,7 @@ export async function sendVerificationEmail(email: string, token: string): Promi
     await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
-      subject: "Verify your email — DollarShop",
+      subject: "Verify your email — ShopRehan",
       html: getVerifyEmailHtml(url),
     });
     logger.info("Verification email sent", { email });
@@ -44,7 +44,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
     await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
-      subject: "Reset your password — DollarShop",
+      subject: "Reset your password — ShopRehan",
       html: getResetPasswordHtml(url),
     });
     logger.info("Password reset email sent", { email });
@@ -59,7 +59,7 @@ export async function sendWelcomeEmail(email: string, name: string): Promise<voi
     await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
-      subject: "Welcome to DollarShop!",
+      subject: "Welcome to ShopRehan!",
       html: getWelcomeHtml(name),
     });
     logger.info("Welcome email sent", { email });
@@ -92,7 +92,7 @@ export async function sendOrderConfirmationEmail(
     await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
-      subject: `Order Confirmed — ${data.orderNumber} — DollarShop`,
+      subject: `Order Confirmed — ${data.orderNumber} — ShopRehan`,
       html: getOrderConfirmationHtml(data),
     });
     logger.info("Order confirmation email sent", { email, orderNumber: data.orderNumber });
@@ -114,7 +114,7 @@ export async function sendOrderStatusEmail(
     await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
-      subject: `Order ${data.orderNumber} — Status Updated — DollarShop`,
+      subject: `Order ${data.orderNumber} — Status Updated — ShopRehan`,
       html: getOrderStatusUpdatedHtml(data),
     });
     logger.info("Order status email sent", { email, orderNumber: data.orderNumber });

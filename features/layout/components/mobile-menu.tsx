@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,10 @@ export function MobileMenu() {
       </SheetTrigger>
       <SheetContent side="left" className="w-72 p-0">
         <SheetHeader className="border-b border-border px-4 py-3">
-          <SheetTitle className="text-left text-base font-semibold">DollarShop</SheetTitle>
+          <SheetTitle className="flex items-center gap-2 text-left text-base font-semibold">
+            <Image src="/logo.svg" alt="ShopRehan" width={28} height={28} />
+            ShopRehan
+          </SheetTitle>
         </SheetHeader>
 
         <div className="px-4 py-3">

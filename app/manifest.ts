@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "DollarShop",
-    short_name: "DollarShop",
+    name: "ShopRehan",
+    short_name: "ShopRehan",
     description:
       "Shop quality products at unbeatable prices. Pakistan's modern e-commerce platform.",
     start_url: "/",

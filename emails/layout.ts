@@ -28,7 +28,7 @@ export function emailLayout(content: string, preheader?: string): string {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>DollarShop</title>
+  <title>ShopRehan</title>
   <!--[if mso]>
   <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
@@ -45,7 +45,7 @@ export function emailLayout(content: string, preheader?: string): string {
               <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="background:${BRAND_COLOR};border-radius:10px;padding:8px 20px;">
-                    <span style="font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;text-decoration:none;">DollarShop</span>
+                    <span style="font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;text-decoration:none;">ShopRehan</span>
                   </td>
                 </tr>
               </table>
@@ -65,7 +65,7 @@ export function emailLayout(content: string, preheader?: string): string {
           <tr>
             <td align="center" style="padding:0 16px;">
               <p style="margin:0 0 8px;font-size:12px;line-height:1.5;color:${TEXT_MUTED};">
-                &copy; ${new Date().getFullYear()} DollarShop. All rights reserved.
+                &copy; ${new Date().getFullYear()} ShopRehan. All rights reserved.
               </p>
               <p style="margin:0;font-size:11px;line-height:1.5;color:${TEXT_MUTED};">
                 Fast delivery across Pakistan

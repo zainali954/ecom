@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
   try {
     const { category } = await getProductsByCategory(slug, {});
-    const description = category.description || `Shop ${category.name} products at DollarShop`;
+    const description = category.description || `Shop ${category.name} products at ShopRehan`;
 
     return {
       title: category.name,

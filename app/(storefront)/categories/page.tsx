@@ -5,7 +5,7 @@ import { CategoryCard } from "@/features/home/components/category-card";
 export const metadata: Metadata = {
   title: "Categories",
   description:
-    "Browse all product categories. Shop by category to find exactly what you need at DollarShop.",
+    "Browse all product categories. Shop by category to find exactly what you need at ShopRehan.",
   alternates: { canonical: "/categories" },
 };
 

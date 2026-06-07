@@ -27,7 +27,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="text-lg font-semibold tracking-tight">
-              DollarShop
+              ShopRehan
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
               Your one-stop shop for great deals. Quality products at the best prices in Pakistan.
@@ -86,7 +86,7 @@ export function Footer() {
         <Separator className="my-8" />
 
         <p className="text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} DollarShop. All rights reserved.
+          &copy; {new Date().getFullYear()} ShopRehan. All rights reserved.
         </p>
       </div>
     </footer>

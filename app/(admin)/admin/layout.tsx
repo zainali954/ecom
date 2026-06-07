@@ -3,7 +3,7 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { AdminShell } from "@/features/admin/components/admin-shell";
 
 export const metadata: Metadata = {
-  title: "Admin | DollarShop",
+  title: "Admin | ShopRehan",
   robots: { index: false, follow: false },
 };
 

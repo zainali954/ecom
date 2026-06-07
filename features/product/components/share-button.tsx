@@ -84,7 +84,7 @@ export function ShareButton({ productName, productSlug }: ShareButtonProps) {
 
   const getUrl = () => `${window.location.origin}/product/${productSlug}`;
 
-  const text = `Check out ${productName} on DollarShop!`;
+  const text = `Check out ${productName} on ShopRehan!`;
 
   async function handleCopyLink() {
     try {

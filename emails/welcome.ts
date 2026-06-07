@@ -35,15 +35,15 @@ export function getWelcomeHtml(name: string): string {
     .join("");
 
   const content = `
-    ${emailHeading(`Welcome to DollarShop, ${name}!`)}
+    ${emailHeading(`Welcome to ShopRehan, ${name}!`)}
     ${emailText("Your account is all set up. We're excited to have you on board — here's what you can look forward to:")}
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 8px;">
       ${featuresHtml}
     </table>
     ${emailDivider()}
     ${emailButton(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000", "Start Shopping")}
-    ${emailSmallText("Happy shopping! — The DollarShop Team")}
+    ${emailSmallText("Happy shopping! — The ShopRehan Team")}
   `;
 
-  return emailLayout(content, `Welcome to DollarShop, ${name}! Start exploring great deals.`);
+  return emailLayout(content, `Welcome to ShopRehan, ${name}! Start exploring great deals.`);
 }

@@ -97,7 +97,7 @@ export function getOrderStatusUpdatedHtml(data: OrderStatusData): string {
 
     ${emailButton(`${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/account/orders`, "View Order Details")}
 
-    ${emailSmallText("If you have any questions, just reply to this email. Thank you for shopping with DollarShop!")}
+    ${emailSmallText("If you have any questions, just reply to this email. Thank you for shopping with ShopRehan!")}
   `;
 
   return emailLayout(content, `Order ${data.orderNumber} — ${capitalizeStatus(data.newStatus)}`);

@@ -17,18 +17,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://dollarshop.pk"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://shoprehan.com"),
   title: {
-    default: "DollarShop — Affordable Shopping in Pakistan",
-    template: "%s — DollarShop",
+    default: "ShopRehan — Affordable Shopping in Pakistan",
+    template: "%s — ShopRehan",
   },
   description:
     "Shop quality products at unbeatable prices. Pakistan's modern e-commerce platform with fast delivery.",
-  keywords: ["online shopping pakistan", "dollarshop", "affordable products", "ecommerce pakistan"],
+  keywords: ["online shopping pakistan", "shoprehan", "affordable products", "ecommerce pakistan"],
   openGraph: {
     type: "website",
     locale: "en_PK",
-    siteName: "DollarShop",
+    siteName: "ShopRehan",
   },
   twitter: {
     card: "summary_large_image",
@@ -36,6 +36,10 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/logo.svg",
   },
 };
 

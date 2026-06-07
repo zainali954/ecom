@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     const description =
       product.shortDescription ||
       product.description?.slice(0, 160) ||
-      `Shop ${product.name} at DollarShop`;
+      `Shop ${product.name} at ShopRehan`;
 
     return {
       title: product.name,

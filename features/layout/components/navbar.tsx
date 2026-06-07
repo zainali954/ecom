@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
 import { auth } from "@/auth";
@@ -22,7 +23,8 @@ export async function Navbar() {
         <MobileMenu />
 
         <Link href="/" className="mr-2 flex items-center gap-2 font-semibold tracking-tight">
-          DollarShop
+          <Image src="/logo.svg" alt="ShopRehan" width={32} height={32} priority />
+          ShopRehan
         </Link>
 
         <NavLinks className="hidden md:flex" />

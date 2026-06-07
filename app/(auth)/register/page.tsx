@@ -4,7 +4,7 @@ import { RegisterForm } from "@/features/auth/components/register-form";
 export const metadata: Metadata = {
   title: "Create Account",
   description:
-    "Create your DollarShop account and start shopping quality products at the best prices.",
+    "Create your ShopRehan account and start shopping quality products at the best prices.",
 };
 
 export default function RegisterPage() {

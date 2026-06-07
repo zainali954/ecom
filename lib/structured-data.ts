@@ -1,14 +1,14 @@
 import type { ProductDetail } from "@/types/product";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://dollarshop.pk";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://shoprehan.com";
 
 export function generateOrganizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "DollarShop",
+    name: "ShopRehan",
     url: BASE_URL,
-    logo: `${BASE_URL}/logo.png`,
+    logo: `${BASE_URL}/logo.svg`,
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
@@ -21,7 +21,7 @@ export function generateWebSiteJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "DollarShop",
+    name: "ShopRehan",
     url: BASE_URL,
     potentialAction: {
       "@type": "SearchAction",
