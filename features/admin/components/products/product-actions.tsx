@@ -1,8 +1,16 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +28,7 @@ interface ProductActionsProps {
 
 export function ProductActions({ product }: ProductActionsProps) {
   const [isPending, startTransition] = useTransition();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useRouter();
 
   function handleToggleStatus() {
@@ -41,37 +50,64 @@ export function ProductActions({ product }: ProductActionsProps) {
   function handleDelete() {
     startTransition(async () => {
       const result = await deleteProduct(product.id);
+      setShowDeleteDialog(false);
       if (result.success) toast.success(result.message);
       else toast.error(result.message);
     });
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8" disabled={isPending}>
-          <MoreIcon />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem onClick={() => router.push(`/admin/products/${product.id}`)}>
-          Edit Product
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleToggleFeatured}>
-          {product.isFeatured ? "Remove Featured" : "Mark Featured"}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleToggleStatus}>
-          {product.isActive ? "Deactivate" : "Activate"}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleDelete}
-          className="text-destructive focus:text-destructive"
-        >
-          Delete Product
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-8 w-8" disabled={isPending}>
+            <MoreIcon />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuItem onClick={() => router.push(`/admin/products/${product.id}`)}>
+            Edit Product
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleToggleFeatured}>
+            {product.isFeatured ? "Remove Featured" : "Mark Featured"}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleToggleStatus}>
+            {product.isActive ? "Deactivate" : "Activate"}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => setShowDeleteDialog(true)}
+            className="text-destructive focus:text-destructive"
+          >
+            Delete Product
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Product</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete &quot;{product.name}&quot;? This will also remove all
+              variants, inventory, and uploaded images. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={isPending}>
+              {isPending ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

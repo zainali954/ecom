@@ -48,7 +48,13 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   try {
     product = await getProductBySlug(slug);
   } catch (error) {
-    if (error instanceof NotFoundError) notFound();
+    if (
+      error instanceof NotFoundError ||
+      (error instanceof Error &&
+        "statusCode" in error &&
+        (error as { statusCode: number }).statusCode === 404)
+    )
+      notFound();
     throw error;
   }
 

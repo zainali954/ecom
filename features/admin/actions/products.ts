@@ -7,6 +7,7 @@ import { ProductVariant } from "@/models/product-variant";
 import { Inventory } from "@/models/inventory";
 import { revalidatePath } from "next/cache";
 import { productSchema } from "@/schemas/product";
+import cloudinary from "@/lib/cloudinary";
 
 export async function createProduct(data: unknown) {
   await requireAdmin();
@@ -207,6 +208,19 @@ export async function deleteProduct(productId: string) {
     return { success: false, message: "Product not found" };
   }
 
+  const images = (product.images ?? []) as Array<{ url: string }>;
+  const publicIds = images
+    .map((img) => extractCloudinaryPublicId(img.url))
+    .filter(Boolean) as string[];
+
+  if (publicIds.length > 0) {
+    try {
+      await cloudinary.api.delete_resources(publicIds);
+    } catch {
+      // Don't block deletion if Cloudinary cleanup fails
+    }
+  }
+
   await Promise.all([
     ProductVariant.deleteMany({ product: productId }),
     Inventory.deleteMany({ product: productId }),
@@ -217,6 +231,11 @@ export async function deleteProduct(productId: string) {
   revalidatePath("/products");
 
   return { success: true, message: "Product deleted successfully" };
+}
+
+function extractCloudinaryPublicId(url: string): string | null {
+  const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.\w+$/);
+  return match ? match[1] : null;
 }
 
 export async function toggleProductStatus(productId: string) {
