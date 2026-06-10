@@ -19,17 +19,20 @@ export async function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 md:h-14 md:gap-4 lg:px-8">
         <MobileMenu />
 
-        <Link href="/" className="mr-2 flex items-center gap-2 font-semibold tracking-tight">
+        <Link
+          href="/"
+          className="mr-1 flex items-center gap-2 font-semibold tracking-tight md:mr-2"
+        >
           <Image src="/logo.svg" alt="ShopRehan" width={32} height={32} priority />
-          ShopRehan
+          <span className="text-base md:text-sm">ShopRehan</span>
         </Link>
 
         <NavLinks className="hidden md:flex" />
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2 md:gap-3">
           <SearchBar />
           <NavActions session={session} cartCount={cartCount} wishlistCount={wishlistCount} />
         </div>

@@ -35,7 +35,7 @@ export function MobileMenu() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="sm" className="md:hidden" aria-label="Open menu">
+        <Button variant="ghost" size="icon" className="size-10 md:hidden" aria-label="Open menu">
           <MenuIcon />
         </Button>
       </SheetTrigger>
@@ -89,8 +89,7 @@ function MenuIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
+      className="size-6 md:size-5"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

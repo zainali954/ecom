@@ -27,7 +27,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5 sm:space-y-4">
       {state.message && !state.success && (
         <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
           {state.message}

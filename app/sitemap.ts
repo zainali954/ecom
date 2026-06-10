@@ -3,6 +3,8 @@ import { connectDB } from "@/lib/db";
 import { Product } from "@/models/product";
 import { Category } from "@/models/category";
 
+export const dynamic = "force-dynamic";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://shoprehan.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -31,8 +31,8 @@ export function NavActions({
   wishlistCount: number;
 }) {
   return (
-    <div className="flex items-center gap-2">
-      <Button variant="ghost" size="sm" asChild>
+    <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2">
+      <Button variant="ghost" size="icon" className="size-10 md:size-8" asChild>
         <Link href="/wishlist" aria-label="Wishlist" className="relative">
           <HeartIcon />
           <CountBadge count={wishlistCount} />
@@ -40,7 +40,7 @@ export function NavActions({
         </Link>
       </Button>
 
-      <Button variant="ghost" size="sm" asChild>
+      <Button variant="ghost" size="icon" className="size-10 md:size-8" asChild>
         <Link href="/cart" aria-label="Cart" className="relative">
           <ShoppingBagIcon />
           <CountBadge count={cartCount} />
@@ -51,7 +51,7 @@ export function NavActions({
       {session?.user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="icon" className="size-10 md:size-8">
               <UserIcon />
               <span className="hidden sm:inline ml-1 text-sm">{session.user.name}</span>
             </Button>
@@ -79,7 +79,7 @@ export function NavActions({
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <Button variant="default" size="sm" asChild>
+        <Button variant="default" size="default" className="md:h-8 md:px-3 md:text-xs" asChild>
           <Link href="/login">Sign in</Link>
         </Button>
       )}
@@ -91,8 +91,7 @@ function HeartIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      className="size-5 md:size-[18px]"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -109,8 +108,7 @@ function ShoppingBagIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      className="size-5 md:size-[18px]"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -129,8 +127,7 @@ function UserIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      className="size-5 md:size-[18px]"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

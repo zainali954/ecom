@@ -27,7 +27,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
   }
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5 sm:space-y-4">
       <input type="hidden" name="token" value={token} />
 
       {state.message && !state.success && (

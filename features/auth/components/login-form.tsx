@@ -33,7 +33,7 @@ export function LoginForm() {
   }, [state.success, router]);
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5 sm:space-y-4">
       {isEmailNotVerified ? (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 space-y-3">
           <p className="text-sm text-amber-800">{state.message}</p>
