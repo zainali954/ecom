@@ -14,19 +14,26 @@ export function AdminShell({
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background">
-        <AdminSidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
+        <AdminSidebar
+          collapsed={collapsed}
+          onToggle={() => setCollapsed(!collapsed)}
+          mobileOpen={mobileOpen}
+          onMobileOpenChange={setMobileOpen}
+        />
         <div
           className={cn(
             "flex min-h-screen flex-col transition-[margin-left] duration-200",
-            collapsed ? "ml-16" : "ml-60",
+            "ml-0",
+            collapsed ? "md:ml-16" : "md:ml-60",
           )}
         >
-          <AdminHeader userName={userName} />
-          <main className="flex-1 p-6">{children}</main>
+          <AdminHeader userName={userName} onMenuToggle={() => setMobileOpen(true)} />
+          <main className="flex-1 p-4 md:p-6">{children}</main>
         </div>
       </div>
     </TooltipProvider>

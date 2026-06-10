@@ -50,7 +50,7 @@ export function InventoryTable({ data }: InventoryTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border bg-card">
+      <div className="overflow-x-auto rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>

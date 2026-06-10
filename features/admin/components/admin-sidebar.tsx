@@ -8,42 +8,45 @@ import { adminNavItems, type AdminNavIcon } from "../constants";
 import { NavIcon } from "./nav-icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 export function AdminSidebar({
   collapsed,
   onToggle,
+  mobileOpen,
+  onMobileOpenChange,
 }: {
   collapsed: boolean;
   onToggle: () => void;
+  mobileOpen: boolean;
+  onMobileOpenChange: (open: boolean) => void;
 }) {
   const pathname = usePathname();
 
-  return (
-    <aside
-      className={cn(
-        "fixed inset-y-0 left-0 z-30 flex flex-col border-r border-border bg-background transition-[width] duration-200",
-        collapsed ? "w-16" : "w-60",
-      )}
-    >
+  const sidebarContent = (mobile: boolean) => (
+    <>
       <div
         className={cn(
           "flex h-14 items-center border-b border-border px-4",
-          collapsed ? "justify-center" : "justify-between",
+          !mobile && collapsed ? "justify-center" : "justify-between",
         )}
       >
-        {!collapsed && (
+        {(mobile || !collapsed) && (
           <Link
             href="/admin"
             className="flex items-center gap-2 text-sm font-semibold tracking-tight"
+            onClick={() => mobile && onMobileOpenChange(false)}
           >
             <Image src="/logo.svg" alt="ShopRehan" width={28} height={28} />
             ShopRehan
             <span className="text-xs font-normal text-muted-foreground">Admin</span>
           </Link>
         )}
-        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onToggle}>
-          <CollapseIcon collapsed={collapsed} />
-        </Button>
+        {!mobile && (
+          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onToggle}>
+            <CollapseIcon collapsed={collapsed} />
+          </Button>
+        )}
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
@@ -52,24 +55,55 @@ export function AdminSidebar({
             item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
 
           return (
-            <SidebarLink key={item.href} item={item} isActive={isActive} collapsed={collapsed} />
+            <SidebarLink
+              key={item.href}
+              item={item}
+              isActive={isActive}
+              collapsed={!mobile && collapsed}
+              onClick={() => mobile && onMobileOpenChange(false)}
+            />
           );
         })}
       </nav>
 
-      <div className={cn("border-t border-border p-3", collapsed && "flex justify-center")}>
+      <div
+        className={cn("border-t border-border p-3", !mobile && collapsed && "flex justify-center")}
+      >
         <Link
           href="/"
           className={cn(
             "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground",
-            collapsed && "justify-center px-0",
+            !mobile && collapsed && "justify-center px-0",
           )}
+          onClick={() => mobile && onMobileOpenChange(false)}
         >
           <StorefrontIcon />
-          {!collapsed && <span>Back to Store</span>}
+          {(mobile || !collapsed) && <span>Back to Store</span>}
         </Link>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-30 hidden md:flex flex-col border-r border-border bg-background transition-[width] duration-200",
+          collapsed ? "w-16" : "w-60",
+        )}
+      >
+        {sidebarContent(false)}
+      </aside>
+
+      {/* Mobile sidebar (sheet) */}
+      <Sheet open={mobileOpen} onOpenChange={onMobileOpenChange}>
+        <SheetContent side="left" showCloseButton={false} className="w-60 p-0 md:hidden">
+          <SheetTitle className="sr-only">Navigation</SheetTitle>
+          {sidebarContent(true)}
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
 
@@ -96,14 +130,17 @@ function SidebarLink({
   item,
   isActive,
   collapsed,
+  onClick,
 }: {
   item: { label: string; href: string; icon: AdminNavIcon };
   isActive: boolean;
   collapsed: boolean;
+  onClick?: () => void;
 }) {
   const link = (
     <Link
       href={item.href}
+      onClick={onClick}
       className={cn(
         "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
         isActive
