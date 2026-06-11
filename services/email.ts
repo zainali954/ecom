@@ -6,6 +6,7 @@ import { logger } from "@/lib/logger";
 import { getVerifyEmailHtml } from "@/emails/verify-email";
 import { getResetPasswordHtml } from "@/emails/reset-password";
 import { getWelcomeHtml } from "@/emails/welcome";
+import { getChangePasswordHtml } from "@/emails/change-password";
 import { getOrderConfirmationHtml } from "@/emails/order-confirmation";
 import { getOrderStatusUpdatedHtml } from "@/emails/order-status-updated";
 
@@ -65,6 +66,23 @@ export async function sendWelcomeEmail(email: string, name: string): Promise<voi
     logger.info("Welcome email sent", { email });
   } catch (error) {
     logger.error("Failed to send welcome email", { email, error });
+  }
+}
+
+export async function sendChangePasswordEmail(email: string, token: string): Promise<void> {
+  const url = `${env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/account/change-password?token=${token}`;
+
+  try {
+    await transporter.sendMail({
+      from: FROM_EMAIL,
+      to: email,
+      subject: "Change your password — ShopRehan",
+      html: getChangePasswordHtml(url),
+    });
+    logger.info("Change password email sent", { email });
+  } catch (error) {
+    logger.error("Failed to send change password email", { email, error });
+    throw new Error("Failed to send change password email");
   }
 }
 

@@ -15,7 +15,14 @@ export default function AccountPage() {
         Manage your account settings and view your orders
       </p>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Link
+          href="/account/profile"
+          className="rounded-lg border bg-card p-5 transition-colors hover:bg-accent"
+        >
+          <h3 className="text-sm font-medium">Profile</h3>
+          <p className="mt-1 text-xs text-muted-foreground">Update your name and change password</p>
+        </Link>
         <Link
           href="/account/orders"
           className="rounded-lg border bg-card p-5 transition-colors hover:bg-accent"
